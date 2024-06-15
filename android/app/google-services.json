@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "171326931478",
+    "project_id": "tavanairegistrationapp",
+    "storage_bucket": "tavanairegistrationapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171326931478:android:9ad8884da73937bfb06b37",
+        "android_client_info": {
+          "package_name": "com.example.tavanai_registration_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnCmp8Ze7K0icLYErhxK19L9OgpQZ9NUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
