@@ -106,7 +106,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 await SharedPreferences.getInstance();
                             sharedPref.setBool(
                                 SplashScreenState.KEYLOGIN, true);
-                            Get.to(() => HomeScreen());
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(),
+                                ));
                           }
                         } else {
                           Get.snackbar(

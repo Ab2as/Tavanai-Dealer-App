@@ -68,7 +68,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Row(
                       children: [
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.back();
+                            },
                             icon: const Icon(
                               Icons.arrow_back,
                               size: 30,
@@ -131,8 +133,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       keyboard: TextInputType.name,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return (errorMessage);
+                          return "Enter the Name";
                         }
+                        return null;
                       },
                       onSaved: (value) {
                         userNameEditingController.text = value!;
@@ -149,8 +152,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       keyboard: TextInputType.name,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return (errorMessage);
+                          return "Enter the Shop Address";
                         }
+                        return null;
                       },
                       onSaved: (value) {
                         shopAddressEditingController.text = value!;
@@ -167,8 +171,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       keyboard: TextInputType.name,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return (errorMessage);
+                          return "Enter the City";
                         }
+                        return null;
                       },
                       onSaved: (value) {
                         cityEditingController.text = value!;
@@ -185,8 +190,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       keyboard: TextInputType.name,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return (errorMessage);
+                          return "Enter the State";
                         }
+                        return null;
                       },
                       onSaved: (value) {
                         stateEditingController.text = value!;
@@ -203,8 +209,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       keyboard: TextInputType.number,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return (errorMessage);
+                          return "Please Enter a valid Pincode";
                         }
+                        if (!RegExp(r'^[1-9][0-9]{5}$').hasMatch(value)) {
+                          return ("Please Enter a valid Pincode");
+                        }
+                        return null;
                       },
                       onSaved: (value) {
                         pincodeEditingController.text = value!;
@@ -223,7 +233,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       obscureText: false,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return (errorMessage);
+                          return "Please Enter a valid email";
                         }
                         if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                             .hasMatch(value)) {
@@ -286,23 +296,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         col1: Colors.black,
                         col2: Colors.white,
                         onPressed: () async {
-                          bool isregistered = await authController.registerUser(
-                              userNameEditingController.text,
-                              emailEditingController.text,
-                              passwordEditingController.text,
-                              image,
-                              stateEditingController.text,
-                              cityEditingController.text,
-                              shopAddressEditingController.text,
-                              pincodeEditingController.text);
-                          if (isregistered) {
-                            var sharedPref =
-                                await SharedPreferences.getInstance();
-                            sharedPref.setBool(
-                                SplashScreenState.KEYLOGIN, false);
-                            Get.to(() => HomeScreen());
+                          if (_formKey.currentState!.validate()) {
+                            bool isregistered =
+                                await authController.registerUser(
+                                    userNameEditingController.text,
+                                    emailEditingController.text,
+                                    passwordEditingController.text,
+                                    image,
+                                    stateEditingController.text,
+                                    cityEditingController.text,
+                                    shopAddressEditingController.text,
+                                    pincodeEditingController.text);
+                            if (isregistered) {
+                              var sharedPref =
+                                  await SharedPreferences.getInstance();
+                              sharedPref.setBool(
+                                  SplashScreenState.KEYLOGIN, true);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(),
+                                  ));
+                            } else {
+                              Get.snackbar("Error", "Failed to update profile",
+                                  snackPosition: SnackPosition.BOTTOM);
+                            }
                           } else {
-                            Get.snackbar("Error", "Failed to update profile",
+                            Get.snackbar("Error", "Please Upload Correct Data",
                                 snackPosition: SnackPosition.BOTTOM);
                           }
                         }),

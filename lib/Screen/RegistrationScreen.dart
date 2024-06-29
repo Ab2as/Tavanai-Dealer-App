@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:tavanai_registration_app/Controller/auth_controller.dart';
 import 'package:tavanai_registration_app/Screen/HomeScreen.dart';
@@ -79,11 +82,44 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String? selectedValue1 = null;
 
   String message = "";
+  bool? _value = false;
+  String messageTerm =
+      "01. The warranty of your battery shall become null & void if: The battery is transferred to a third party, The battery is found to be mishandled, The battery is not connected properly & is deployed to wrong use. The battery is found to be damaged due to improper handling by unauthorised personnel, fire, excess heat, theft, accident, wilful abuse or overcharging, Any electrolyte or material other than battery grade distilled water is used in the battery.\n 02. Our batteries are warranted solely against poor workmanship and use of faulty material, Consequent liabilities will not be entertained.\n 03. It is the responsibility of the customer to bring suspected battery to the nearest authorised service centre incase of any trouble.\n04. In case your battery develops a fault, you may contact our Uttar Pradesh Authorised Service Provider.";
 
   @override
   Widget build(BuildContext context) {
     User? currentUser = auths.currentUser;
     String dealerEmail = currentUser?.email ?? '';
+
+    Future sendEmail() async {
+      final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+      const serviceId = "service_xsbjpn6";
+      const templateId = "template_hbq0si9";
+      const publicKey = "5WtJrjQbryXrJigl0";
+      final response = await http.post(url,
+          headers: {
+            'origin': 'https://localhost',
+            'Content-Type': 'application/json'
+          },
+          body: json.encode({
+            "service_id": serviceId,
+            "template_id": templateId,
+            "user_id": publicKey,
+            "template_params": {
+              "name": userNameEditingController.text,
+              "serial": serialEditingController.text,
+              "battery": selectedValue.toString(),
+              "model": selectedValue1.toString(),
+              "date": currentDate,
+              "dealerEmail": dealerEmail,
+              "send_to": emailEditingController.text,
+              "message": messageTerm,
+            },
+          }));
+      print(response.body);
+      return response.statusCode;
+    }
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -252,7 +288,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                     MyTextFormField(
                       myController: userNameEditingController,
-                      fieldName: "User Name",
+                      fieldName: "Client Name",
                       myIcon: Icons.person_2_rounded,
                       iconColor: Colors.black,
                       keyboard: TextInputType.name,
@@ -271,7 +307,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     const SizedBox(height: 20),
                     MyTextFormField(
                       myController: userAddressEditingController,
-                      fieldName: "User Address",
+                      fieldName: "Client Address",
                       myIcon: Icons.business,
                       iconColor: Colors.black,
                       keyboard: TextInputType.name,
@@ -291,13 +327,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     const SizedBox(height: 20),
                     MyTextFormField(
                       myController: pincodeEditingController,
-                      fieldName: "Pincode",
+                      fieldName: "Client Pincode",
                       myIcon: Icons.pin,
                       iconColor: Colors.black,
                       keyboard: TextInputType.number,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Please enter a Pincode";
+                          return "Please Enter a valid Pincode";
+                        }
+                        if (!RegExp(r'^[1-9][0-9]{5}$').hasMatch(value)) {
+                          return ("Please Enter a valid Pincode");
                         }
                         return null;
                       },
@@ -310,7 +349,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     const SizedBox(height: 20),
                     MyTextFormField(
                       myController: emailEditingController,
-                      fieldName: "Email",
+                      fieldName: "Client Email",
                       myIcon: Icons.email_rounded,
                       iconColor: Colors.black,
                       keyboard: TextInputType.emailAddress,
@@ -331,7 +370,43 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-
+                    Container(
+                      margin: EdgeInsets.only(right: 10, left: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: CheckboxListTile(
+                        checkboxShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        title: const Text(
+                          'Terms & Conditions',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "fantasy",
+                          ),
+                        ),
+                        subtitle: Text(
+                          messageTerm,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: "fantasy",
+                          ),
+                        ),
+                        value: _value,
+                        onChanged: (value) {
+                          setState(() {
+                            _value = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     MyButton(
                         family: 'Roboto',
                         size: 20.0,
@@ -356,7 +431,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               emailEditingController.text,
                               dealerEmail,
                             );
-                            if (isRegistered) {
+                            if (isRegistered && _value == true) {
+                              sendEmail();
                               Get.dialog(
                                 Dialog(
                                   shape: RoundedRectangleBorder(
@@ -408,13 +484,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 barrierDismissible: false,
                               );
                             } else {
-                              Get.snackbar("Error", "Failed to update profile",
+                              Get.snackbar("Error", "Failed to upload profile",
                                   snackPosition: SnackPosition.BOTTOM);
                             }
                           } else {
                             Get.snackbar(
-                              "Login Error",
-                              "Invalid email or password",
+                              "Registration Error",
+                              "Invalid Email or Details",
                               snackPosition: SnackPosition.BOTTOM,
                             );
                           }

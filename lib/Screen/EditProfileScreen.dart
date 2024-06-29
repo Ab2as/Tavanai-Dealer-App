@@ -14,7 +14,20 @@ import 'package:tavanai_registration_app/Widget/ImagePicker.dart';
 import 'package:tavanai_registration_app/Widget/TextFieldModel.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  EditProfileScreen(
+      {required this.name,
+      required this.address,
+      required this.city,
+      required this.state,
+      required this.pincode,
+      Key? key})
+      : super(key: key);
+
+  String name;
+  String address;
+  String city;
+  String state;
+  String pincode;
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -33,13 +46,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // our form key
   final _formKey = GlobalKey<FormState>();
   // editing Controller
-  final userNameEditingController = new TextEditingController();
-  final shopAddressEditingController = new TextEditingController();
-  final cityEditingController = new TextEditingController();
-  final stateEditingController = new TextEditingController();
-  final pincodeEditingController = new TextEditingController();
+  TextEditingController userNameEditingController = TextEditingController();
+  TextEditingController shopAddressEditingController = TextEditingController();
+  TextEditingController cityEditingController = TextEditingController();
+  TextEditingController stateEditingController = TextEditingController();
+  TextEditingController pincodeEditingController = TextEditingController();
 
   // AuthController authController = Get.put(AuthController());
+  File? reimage;
   File? image;
 
   pickImage(ImageSource source) {
@@ -48,6 +62,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         this.image = img;
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the controller with existing data
+    userNameEditingController = TextEditingController(text: widget.name);
+    shopAddressEditingController = TextEditingController(text: widget.address);
+    stateEditingController = TextEditingController(text: widget.state);
+    cityEditingController = TextEditingController(text: widget.city);
+    pincodeEditingController = TextEditingController(text: widget.pincode);
+  }
+
+  @override
+  void dispose() {
+    // Dispose the controller when the widget is disposed
+    userNameEditingController.dispose();
+    shopAddressEditingController.dispose();
+    cityEditingController.dispose();
+    stateEditingController.dispose();
+    pincodeEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -86,217 +122,223 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         Text('No data available for the current user email'));
               }
               uidD = model.uid;
-            }
 
-            return Container(
-              height: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.grey, Colors.white],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.bottomRight),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Align(
-                            alignment: Alignment.topLeft,
-                            child: IconButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              icon: const Icon(Icons.arrow_back),
-                              iconSize: 30.0,
-                            )),
-
-                        Stack(
-                          children: [
-                            image != null
-                                ? CircleAvatar(
-                                    radius: 65,
-                                    backgroundImage: FileImage(image!))
-                                : const CircleAvatar(
-                                    radius: 65,
-                                    backgroundImage: NetworkImage(
-                                        'https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'),
-                                  ),
-                            Positioned(
-                              bottom: -10,
-                              left: 80,
+              return Container(
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Colors.grey, Colors.white],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.bottomRight),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(36.0),
+                  child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Align(
+                              alignment: Alignment.topLeft,
                               child: IconButton(
                                 onPressed: () {
-                                  pickImage(ImageSource.camera);
+                                  Get.back();
                                 },
-                                icon: const Icon(Icons.add_a_photo),
+                                icon: const Icon(Icons.arrow_back),
+                                iconSize: 30.0,
+                              )),
+
+                          Stack(
+                            children: [
+                              image != null
+                                  ? CircleAvatar(
+                                      radius: 65,
+                                      backgroundImage: FileImage(image!))
+                                  : CircleAvatar(
+                                      radius: 65,
+                                      backgroundImage: NetworkImage(
+                                          'https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg'
+                                          // '${model.photo}'
+                                          ),
+                                    ),
+                              Positioned(
+                                bottom: -10,
+                                left: 80,
+                                child: IconButton(
+                                  onPressed: () {
+                                    pickImage(ImageSource.camera);
+                                  },
+                                  icon: const Icon(Icons.add_a_photo),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        // firstNameField,
-                        const SizedBox(height: 20),
-                        MyTextFormField(
-                          myController: userNameEditingController,
-                          fieldName: "Name",
-                          myIcon: Icons.person_2_rounded,
-                          iconColor: Colors.black,
-                          keyboard: TextInputType.name,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Enter the Name";
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            userNameEditingController.text = value!;
-                          },
-                          errorMessage: "Enter the Name",
-                          obscureText: false,
-                        ),
-                        const SizedBox(height: 20),
-                        MyTextFormField(
-                          myController: shopAddressEditingController,
-                          fieldName: "Shop Address",
-                          myIcon: Icons.business,
-                          iconColor: Colors.black,
-                          keyboard: TextInputType.name,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Enter the Shop Address";
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            shopAddressEditingController.text = value!;
-                          },
-                          errorMessage: "Enter the Shop Address",
-                          obscureText: false,
-                        ),
-                        const SizedBox(height: 20),
-                        MyTextFormField(
-                          myController: cityEditingController,
-                          fieldName: "City",
-                          myIcon: Icons.place,
-                          iconColor: Colors.black,
-                          keyboard: TextInputType.name,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Enter the City";
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            cityEditingController.text = value!;
-                          },
-                          errorMessage: "Enter the City",
-                          obscureText: false,
-                        ),
-                        const SizedBox(height: 20),
-                        MyTextFormField(
-                          myController: stateEditingController,
-                          fieldName: "State",
-                          myIcon: Icons.place,
-                          iconColor: Colors.black,
-                          keyboard: TextInputType.name,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Enter the State";
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            stateEditingController.text = value!;
-                          },
-                          errorMessage: "Enter the State",
-                          obscureText: false,
-                        ),
-                        const SizedBox(height: 20),
-                        MyTextFormField(
-                          myController: pincodeEditingController,
-                          fieldName: "Pincode",
-                          myIcon: Icons.pin,
-                          iconColor: Colors.black,
-                          keyboard: TextInputType.number,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Enter the Pincode";
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            pincodeEditingController.text = value!;
-                          },
-                          errorMessage: "Enter the Pincode",
-                          obscureText: false,
-                        ),
-                        const SizedBox(height: 20),
+                            ],
+                          ),
+                          // firstNameField,
+                          const SizedBox(height: 20),
+                          MyTextFormField(
+                            myController: userNameEditingController,
+                            fieldName: "Name",
+                            myIcon: Icons.person_2_rounded,
+                            iconColor: Colors.black,
+                            keyboard: TextInputType.name,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter the Name";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              userNameEditingController.text = value!;
+                            },
+                            errorMessage: "Enter the Name",
+                            obscureText: false,
+                          ),
+                          const SizedBox(height: 20),
+                          MyTextFormField(
+                            myController: shopAddressEditingController,
+                            fieldName: "Shop Address",
+                            myIcon: Icons.business,
+                            iconColor: Colors.black,
+                            keyboard: TextInputType.name,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter the Shop Address";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              shopAddressEditingController.text = value!;
+                            },
+                            errorMessage: "Enter the Shop Address",
+                            obscureText: false,
+                          ),
+                          const SizedBox(height: 20),
+                          MyTextFormField(
+                            myController: cityEditingController,
+                            fieldName: "City",
+                            myIcon: Icons.place,
+                            iconColor: Colors.black,
+                            keyboard: TextInputType.name,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter the City";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              cityEditingController.text = value!;
+                            },
+                            errorMessage: "Enter the City",
+                            obscureText: false,
+                          ),
+                          const SizedBox(height: 20),
+                          MyTextFormField(
+                            myController: stateEditingController,
+                            fieldName: "State",
+                            myIcon: Icons.place,
+                            iconColor: Colors.black,
+                            keyboard: TextInputType.name,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Enter the State";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              stateEditingController.text = value!;
+                            },
+                            errorMessage: "Enter the State",
+                            obscureText: false,
+                          ),
+                          const SizedBox(height: 20),
+                          MyTextFormField(
+                            myController: pincodeEditingController,
+                            fieldName: "Pincode",
+                            myIcon: Icons.pin,
+                            iconColor: Colors.black,
+                            keyboard: TextInputType.number,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Please Enter a valid Pincode";
+                              }
+                              if (!RegExp(r'^[1-9][0-9]{5}$').hasMatch(value)) {
+                                return ("Please Enter a valid Pincode");
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              pincodeEditingController.text = value!;
+                            },
+                            errorMessage: "Enter the Pincode",
+                            obscureText: false,
+                          ),
+                          const SizedBox(height: 20),
 
-                        MyButton(
-                            family: 'Roboto',
-                            size: 20.0,
-                            message: "Edit Profile",
-                            col1: const Color.fromARGB(255, 104, 103, 91),
-                            col2: const Color.fromARGB(255, 0, 0, 0),
-                            col3: const Color.fromARGB(255, 230, 220, 220),
-                            col4: Colors.grey,
-                            onPressed: () async {
-                              String? documentId =
-                                  await getDocumentIdBySerial(dealerEmail);
-                              if (documentId != null) {
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
-
-                                  if (userNameEditingController
-                                          .text.isNotEmpty &&
-                                      requiredEmail.isNotEmpty &&
-                                      image != null &&
-                                      stateEditingController.text.isNotEmpty &&
-                                      cityEditingController.text.isNotEmpty &&
-                                      shopAddressEditingController
-                                          .text.isNotEmpty &&
-                                      pincodeEditingController
-                                          .text.isNotEmpty) {
-                                    bool isUpdated = await auth.UpdateClaim(
-                                      documentId,
-                                      userNameEditingController.text,
-                                      dealerEmail,
-                                      image,
-                                      stateEditingController.text,
-                                      cityEditingController.text,
-                                      shopAddressEditingController.text,
-                                      pincodeEditingController.text,
-                                      uidD,
-                                    );
-                                    if (isUpdated) {
-                                      Get.to(() => HomeScreen());
+                          MyButton(
+                              family: 'Roboto',
+                              size: 20.0,
+                              message: "Edit Profile",
+                              col1: const Color.fromARGB(255, 104, 103, 91),
+                              col2: const Color.fromARGB(255, 0, 0, 0),
+                              col3: const Color.fromARGB(255, 230, 220, 220),
+                              col4: Colors.grey,
+                              onPressed: () async {
+                                String? documentId =
+                                    await getDocumentIdBySerial(dealerEmail);
+                                if (documentId != null) {
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+                                    if (userNameEditingController
+                                            .text.isNotEmpty &&
+                                        requiredEmail.isNotEmpty &&
+                                        image != null &&
+                                        stateEditingController
+                                            .text.isNotEmpty &&
+                                        cityEditingController.text.isNotEmpty &&
+                                        shopAddressEditingController
+                                            .text.isNotEmpty &&
+                                        pincodeEditingController
+                                            .text.isNotEmpty) {
+                                      bool isUpdated = await auth.UpdateClaim(
+                                        documentId,
+                                        userNameEditingController.text,
+                                        dealerEmail,
+                                        image,
+                                        stateEditingController.text,
+                                        cityEditingController.text,
+                                        shopAddressEditingController.text,
+                                        pincodeEditingController.text,
+                                        uidD,
+                                      );
+                                      if (isUpdated) {
+                                        Get.to(() => HomeScreen());
+                                      } else {
+                                        Get.snackbar(
+                                            "Error", "Failed to update profile",
+                                            snackPosition:
+                                                SnackPosition.BOTTOM);
+                                      }
                                     } else {
-                                      Get.snackbar(
-                                          "Error", "Failed to update profile",
+                                      Get.snackbar("Error",
+                                          "Please fill all fields and select an image",
                                           snackPosition: SnackPosition.BOTTOM);
                                     }
-                                  } else {
-                                    Get.snackbar("Error",
-                                        "Please fill all fields and select an image",
-                                        snackPosition: SnackPosition.BOTTOM);
                                   }
+                                } else {
+                                  Get.snackbar("Error", "Document not found",
+                                      snackPosition: SnackPosition.BOTTOM);
                                 }
-                              } else {
-                                Get.snackbar("Error", "Document not found",
-                                    snackPosition: SnackPosition.BOTTOM);
-                              }
-                            }),
-                        const SizedBox(height: 15),
-                      ],
+                              }),
+                          const SizedBox(height: 15),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
+              );
+            }
           },
         ),
       ),

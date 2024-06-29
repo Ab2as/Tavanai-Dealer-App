@@ -82,7 +82,12 @@ class ProfileScreen extends StatelessWidget {
                     size: 20.0,
                     message: "Edit Profile",
                     onPressed: () {
-                      Get.to(const EditProfileScreen());
+                      Get.to(EditProfileScreen(
+                          name: model.name,
+                          address: model.shopAddress,
+                          city: model.city,
+                          state: model.state,
+                          pincode: model.pincode));
                     },
                     col1: const Color.fromARGB(255, 104, 103, 91),
                     col2: Colors.black,
@@ -150,8 +155,11 @@ class ProfileScreen extends StatelessWidget {
                       // auth.signOut();
                       var sharedPref = await SharedPreferences.getInstance();
                       sharedPref.setBool(SplashScreenState.KEYLOGIN, false);
-                      Get.to(const LoginScreen());
+                      Get.offAll(LoginScreen());
                     },
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                 ],
               ),

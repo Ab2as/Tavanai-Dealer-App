@@ -12,6 +12,26 @@ class BatteryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Tavanai Battery',
+            style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Roboto'),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+                size: 30,
+              )),
+          backgroundColor: Colors.grey,
+        ),
         body: Container(
           height: double.infinity,
           decoration: const BoxDecoration(
@@ -24,32 +44,32 @@ class BatteryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        icon: const Icon(Icons.arrow_back),
-                        iconSize: 30,
-                        color: Colors.black,
-                      ),
-                      const Expanded(
-                        child: Text(
-                          'Tavanai Battery',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.start,
+                //     children: [
+                //       IconButton(
+                //         onPressed: () {
+                //           Get.back();
+                //         },
+                //         icon: const Icon(Icons.arrow_back),
+                //         iconSize: 30,
+                //         color: Colors.black,
+                //       ),
+                //       const Expanded(
+                //         child: Text(
+                //           'Tavanai Battery',
+                //           textAlign: TextAlign.center,
+                //           style: TextStyle(
+                //               fontSize: 30,
+                //               fontFamily: 'Roboto',
+                //               fontWeight: FontWeight.bold),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 const SizedBox(
                   height: 30,
                 ),

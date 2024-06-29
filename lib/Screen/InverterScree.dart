@@ -15,6 +15,7 @@ class InverterScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto'),
           ),
+          centerTitle: true,
           leading: IconButton(
               onPressed: () {
                 Get.back();

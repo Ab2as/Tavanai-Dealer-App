@@ -48,7 +48,7 @@ class GridItem extends StatelessWidget {
                     const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Image.network(
                   imageUrl,
-                  height: 120,
+                  height: 140,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),

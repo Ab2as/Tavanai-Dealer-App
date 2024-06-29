@@ -15,6 +15,8 @@ class ERickshawScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto'),
           ),
+          elevation: 0.0,
+          centerTitle: true,
           leading: IconButton(
               onPressed: () {
                 Get.back();

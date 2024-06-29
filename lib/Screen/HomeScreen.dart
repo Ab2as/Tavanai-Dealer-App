@@ -6,6 +6,7 @@ import 'package:tavanai_registration_app/Controller/dummyFetch.dart';
 import 'package:tavanai_registration_app/Model/dummyModel.dart';
 import 'package:tavanai_registration_app/Screen/BatteryScreen.dart';
 import 'package:tavanai_registration_app/Screen/ClaimScreen.dart';
+import 'package:tavanai_registration_app/Screen/ClientScreen.dart';
 import 'package:tavanai_registration_app/Screen/RegistrationScreen.dart';
 import 'package:tavanai_registration_app/Screen/profileScreen.dart';
 import 'package:tavanai_registration_app/Widget/Card3D.dart';
@@ -147,19 +148,47 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Center(
-                      child: SizedBox(
-                        height: 240,
-                        width: 190,
-                        child: ThreeDCard(
-                            imageUrl:
-                                'https://cdni.iconscout.com/illustration/premium/thumb/claim-approval-report-7823885-6267863.png?f=webp',
-                            text: "Claim",
-                            onPressed: () {
-                              Get.to(const ClaimScreen());
-                            }),
-                      ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          height: 240,
+                          width: 190,
+                          child: ThreeDCard(
+                              imageUrl:
+                                  'https://img.freepik.com/free-vector/business-men-avatar-cartoon_24640-47583.jpg?w=740&t=st=1719650608~exp=1719651208~hmac=7aff059d1feef7151025eef3a8837930f4afce2a5f3be88133b11ea96904413c',
+                              text: "Client Info",
+                              onPressed: () {
+                                Get.to(() => ClientInfoScreen());
+                              }),
+                        ),
+                        SizedBox(
+                          height: 240,
+                          width: 190,
+                          child: ThreeDCard(
+                              imageUrl:
+                                  'https://img.freepik.com/premium-vector/mortgage-process-concept-businesswoman-buying-property-with-mortgage-flat-vector-modern-illustration_566886-13468.jpg?w=900',
+                              text: "Claim",
+                              onPressed: () {
+                                Get.to(const ClaimScreen());
+                              }),
+                        ),
+                      ],
                     ),
+                    // Center(
+                    //   child: SizedBox(
+                    //     height: 240,
+                    //     width: 190,
+                    //     child: ThreeDCard(
+                    //         imageUrl:
+                    //             'https://img.freepik.com/premium-vector/mortgage-process-concept-businesswoman-buying-property-with-mortgage-flat-vector-modern-illustration_566886-13468.jpg?w=900',
+                    //         text: "Claim",
+                    //         onPressed: () {
+                    //           Get.to(const ClaimScreen());
+                    //         }),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
